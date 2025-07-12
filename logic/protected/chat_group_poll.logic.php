@@ -26,12 +26,12 @@ foreach ($groups_xml->group as $g) {
                 $isMe = $senderId === $userId;
                 echo '<div class="flex ' . ($isMe ? 'justify-end' : 'justify-start') . ' mb-4">';
                 echo '<div class="max-w-md px-4 py-2 rounded-2xl shadow-lg border ' . 
-                    ($isMe ? 'bg-amber-200 dark:bg-amber-700/60 border-amber-300 dark:border-amber-800 text-right' : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700') . '">';
+                    ($isMe ? 'bg-amber-200 dark:bg-amber-200 text-gray-900 border-amber-300 dark:border-amber-800 text-right' : 'bg-white dark:bg-gray-200 border-gray-200 dark:border-gray-700') . '">';
                 echo '<div class="text-xs text-gray-500 mb-1 flex items-center gap-2 ' . ($isMe ? '' : 'justify-start') . '">';
-                echo '<span class="' . ($isMe ? '' : 'font-bold text-gray-700 dark:text-gray-200') . '">' . htmlspecialchars($senderName) . '</span>';
+                echo '<span class="' . ($isMe ? '' : 'font-bold text-gray-700 dark:text-gray-900') . '">' . htmlspecialchars($senderName) . '</span>';
                 echo '<span>' . date('d/m H:i', strtotime((string)$msg['timestamp'])) . '</span>';
                 echo '</div>';
-                echo '<div class="text-sm text-gray-900 dark:text-gray-100 whitespace-pre-line">' . nl2br(htmlspecialchars((string)$msg->text)) . '</div>';
+                echo '<div class="text-sm text-gray-900 dark:text-gray-900 whitespace-pre-line">' . nl2br(htmlspecialchars((string)$msg->text)) . '</div>';
                 if (isset($msg->file)) {
                     echo '<div class="mt-1"><a href="/whatsup2/' . htmlspecialchars((string)$msg->file['path']) . '" target="_blank" class="text-amber-600 underline">Fichier: ' . htmlspecialchars((string)$msg->file['name']) . '</a></div>';
                 }
