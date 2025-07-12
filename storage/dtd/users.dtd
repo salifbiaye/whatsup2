@@ -1,0 +1,10 @@
+<!ELEMENT users (user*)>
+<!ELEMENT user (email, password, displayName, avatar, status, contacts)>
+<!ELEMENT email (#PCDATA)>
+<!ELEMENT password (#PCDATA)>
+<!ELEMENT displayName (#PCDATA)>
+<!ELEMENT avatar (#PCDATA)>
+<!ELEMENT status (#PCDATA)>
+<!ELEMENT contacts (contact*)>
+<!ELEMENT contact (#PCDATA)>
+<!ATTLIST user id ID #REQUIRED>

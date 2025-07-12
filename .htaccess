@@ -1,0 +1,8 @@
+RewriteEngine On
+RewriteBase /whatsup2/
+
+# Routes dynamiques depuis /routes
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([a-zA-Z0-9_-]+)$ routes/$1.php [L,NC]
+

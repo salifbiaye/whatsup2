@@ -1,0 +1,11 @@
+<!ELEMENT groups (group*)>
+<!ELEMENT group (name, admin, members, messages)>
+<!ATTLIST group id ID #REQUIRED>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT admin (#PCDATA)>
+<!ELEMENT members (member*)>
+<!ELEMENT member (#PCDATA)>
+<!ELEMENT messages (message*)>
+<!ELEMENT message (text)>
+<!ATTLIST message id ID #REQUIRED sender IDREF #REQUIRED timestamp CDATA #REQUIRED>
+<!ELEMENT text (#PCDATA)>

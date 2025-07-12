@@ -1,0 +1,9 @@
+<!ELEMENT privateChats (chat*)>
+<!ELEMENT chat (messages)>
+<!ATTLIST chat id ID #REQUIRED user1 IDREF #REQUIRED user2 IDREF #REQUIRED>
+<!ELEMENT messages (message*)>
+<!ELEMENT message (text, file?)>
+<!ATTLIST message id ID #REQUIRED sender IDREF #REQUIRED timestamp CDATA #REQUIRED>
+<!ELEMENT text (#PCDATA)>
+<!ELEMENT file EMPTY>
+<!ATTLIST file name CDATA #REQUIRED type CDATA #REQUIRED path CDATA #REQUIRED>

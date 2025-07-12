@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE users SYSTEM "../dtd/users.dtd">
+<users>
+  <user id="u1">
+    <email>salif.biaye@gmail.com</email>
+    <password>passer123</password>
+    <displayName>Salif B.</displayName>
+    <avatar>storage/avatars/avatar_default.png</avatar>
+    <status>online</status>
+    <contacts>
+      <contact>u2</contact>
+    </contacts>
+  </user>
+<user id="u2"><email>salif.ndiaye@gmail.com</email><password>passer</password><displayName>xebec</displayName><avatar>storage/avatars/avatar_default.png</avatar><status>online</status><contacts><contact>u1</contact><contact>u3</contact></contacts></user>
+<user id="u3"><email>zal.diop@gmail.com</email><password>passer</password><displayName>rocks</displayName><avatar>storage/avatars/avatar_u3_1752360092_salif.jpg</avatar><status>online</status><contacts><contact>u1</contact><contact>u2</contact></contacts></user><user id="dsd" displayName="rocks" avatar="" status="offline"/><user id="zal" displayName="rockssss" avatar="" status="offline"/></users>
