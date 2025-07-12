@@ -1,4 +1,4 @@
-<div class="mx-auto bg-white h-full dark:bg-white/5 shadow p-6">
+<div class="mx-auto bg-white h-screen dark:bg-white/5 shadow p-6">
     <div class="flex items-center gap-3 mb-4">
         <img src="/whatsup2/<?php echo $contactAvatar!='' ? $contactAvatar : 'storage/avatars/avatar_default.png'; ?>" alt="Avatar" class="w-10 h-10 rounded-full object-cover border">
         <div>
