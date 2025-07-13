@@ -7,7 +7,7 @@
     <button onclick="closeModal('<?php echo $modalId; ?>')" class="absolute top-3 right-3 text-gray-400 hover:text-red-500 text-2xl">&times;</button>
     <h2 class="text-xl font-bold mb-4 text-gray-800 dark:text-gray-100">Ajouter un contact</h2>
     <?php if (!empty($alert)) echo $alert; ?>
-    <form method="post" action="" autocomplete="off">
+    <form method="post" action="/whatsup2/chat_private" autocomplete="off">
       <input type="hidden" name="create_contact" value="1">
       <label class="block mb-2 text-gray-700 dark:text-gray-200">Adresse email ou nom affiché du contact</label>
       <input type="text" name="contact_query" required placeholder="Email ou nom affiché" class="w-full px-3 py-2 mb-4 rounded border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-amber-400 dark:text-gray-100">

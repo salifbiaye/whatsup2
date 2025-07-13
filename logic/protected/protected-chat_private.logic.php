@@ -46,7 +46,11 @@ if (isset($_POST['create_contact']) && isset($_SESSION['email_id'])) {
                 } else {
                     $me->contacts->addChild('contact', $found_id);
                     $users_xml->asXML(__DIR__ . '/../../storage/xml/users.xml');
+                    // AJOUTE ICI LA CREATION DE DEMANDE
+                    
+                    ajouter_demande_contact($_SESSION['email_id'], $found_id);
                     $alert = "<div class='text-green-600 mb-2'>Contact ajouté avec succès !</div>";
+                    header('Location: /whatsup2/demandes');
                 }
             }
         }
@@ -221,6 +225,39 @@ if (isset($chat->messages->message)) {
             ] : null
         ];
     }
+}
+
+function ajouter_demande_contact($current_user_id, $contact_id) {
+    if ($contact_id === $current_user_id) return false; // Pas de demande à soi-même
+
+    $demande_file = __DIR__ . '/../../storage/xml/demandes.xml';
+
+    // Charger ou créer le fichier XML des demandes
+    if (file_exists($demande_file)) {
+        $demandes_xml = simplexml_load_file($demande_file);
+    } else {
+        $demandes_xml = new SimpleXMLElement('<demandes></demandes>');
+    }
+
+    // Vérifier si une demande similaire existe déjà (pas de doublon pending)
+    foreach ($demandes_xml->demande as $demande) {
+        if (
+            (string)$demande->sender_id === $current_user_id &&
+            (string)$demande->receiver_id === $contact_id &&
+            (string)$demande->status === 'pending'
+        ) {
+            return false; // Déjà en attente
+        }
+    }
+
+    // Ajout de la demande
+    $new_demande = $demandes_xml->addChild('demande');
+    $new_demande->addChild('sender_id', $current_user_id);
+    $new_demande->addChild('receiver_id', $contact_id);
+    $new_demande->addChild('status', 'pending');
+    $new_demande->addChild('date', date('c'));
+    $demandes_xml->asXML($demande_file);
+    return true;
 }
 $contactDisplayName = htmlspecialchars((string)$contact->displayName);
 $contactAvatar = (string)$contact->avatar ?: 'whatsup2/storage/avatars/avatar_default.png';
