@@ -1,18 +1,18 @@
 <?php
-// Variables attendues : $group, $messages, $members, $userId
+// Variables attendues : $group (SimpleXMLElement), $messages, $members, $userId
 ?>
-<div class="mx-auto bg-white h-full dark:bg-white/5 shadow p-6">
-    <div class="flex items-center  gap-3 mb-4">
+<div class="mx-auto bg-white h-screen dark:bg-white/5 shadow p-6">
+    <div class="flex items-center gap-3 mb-4">
         <img src="/whatsup2/storage/avatars/avatar_group.png" alt="Avatar Groupe" class="w-10 h-10 rounded-full object-cover border">
         <div>
-            <div class="font-semibold text-gray-800 dark:text-gray-100"><?php echo htmlspecialchars($group['name']); ?></div>
+            <div class="font-semibold text-gray-800 dark:text-gray-100"><?php echo htmlspecialchars((string)$group->name); ?></div>
             <div class="text-xs text-gray-400 dark:text-gray-400">Chat de groupe</div>
         </div>
     </div>
   <!-- Header -->
   <div class="flex items-center gap-3 px-4  border-gray-200 dark:border-gray-700  ">
     <div class="font-semibold text-lg text-gray-900 dark:text-gray-100 flex-1">
-      <?php echo htmlspecialchars($group['name']); ?>
+      <?php echo htmlspecialchars((string)$group->name); ?>
     </div>
     <div class="text-xs text-gray-500 dark:text-gray-400">
       <?php echo count($members); ?> membres

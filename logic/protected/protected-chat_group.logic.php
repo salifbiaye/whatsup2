@@ -1,16 +1,274 @@
 <?php
+/**
+ * Groupe Chat Logic - WhattsUp
+ * Gestion des groupes de chat avec fonctions métier séparées
+ * Refactorisé pour lisibilité, testabilité et évolutivité
+ */
+
 session_start();
 require_once __DIR__ . '/../../utils.php';
-$userId = $_SESSION['email_id'] ?? null;
-$group_id = $_GET['group'] ?? '';
-$group = null;
-$messages = [];
-$members = [];
-if (!$userId) {
-    header('Location: /whatsup2/login');
-    exit();
+
+// ========== CONFIGURATION ========== //
+
+define('GROUPS_XML_PATH', __DIR__ . '/../../storage/xml/groups.xml');
+define('USERS_XML_PATH', __DIR__ . '/../../storage/xml/users.xml');
+define('FILES_STORAGE_PATH', __DIR__ . '/../../storage/files');
+
+// ========== FONCTIONS MÉTIER - VALIDATION ========== //
+
+/**
+ * Vérifie que les données de création de groupe sont valides
+ */
+function validate_group_creation_input($group_name, $members) {
+    if (empty(trim($group_name))) {
+        return [false, "<div class='text-red-500 mb-2'>Le nom du groupe est obligatoire.</div>"];
+    }
+    
+    if (empty($members)) {
+        return [false, "<div class='text-red-500 mb-2'>Au moins un membre doit être sélectionné.</div>"];
+    }
+    
+    return [true, ''];
 }
-if (!$group_id) {
+
+// ========== FONCTIONS MÉTIER - GESTION GROUPES ========== //
+
+/**
+ * Charge ou crée le fichier XML des groupes
+ */
+function load_groups_xml() {
+    if (!file_exists(GROUPS_XML_PATH)) {
+        $groups_xml = new SimpleXMLElement('<groups></groups>');
+        $groups_xml->asXML(GROUPS_XML_PATH);
+        return $groups_xml;
+    }
+    return simplexml_load_file(GROUPS_XML_PATH);
+}
+
+/**
+ * Vérifie si un groupe avec ce nom existe déjà
+ */
+function group_name_exists($groups_xml, $group_name) {
+    foreach ($groups_xml->group as $existing_group) {
+        if (strtolower(trim((string)$existing_group->name)) === strtolower(trim($group_name))) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
+ * Génère un nouvel ID unique pour un groupe
+ */
+function generate_group_id($groups_xml) {
+    return 'g' . (count($groups_xml->group) + 1);
+}
+
+/**
+ * Crée un nouveau groupe
+ */
+function create_group($group_name, $members, $userId) {
+    $groups_xml = load_groups_xml();
+    
+    // Vérification des doublons
+    if (group_name_exists($groups_xml, $group_name)) {
+        return [false, "<div class='text-red-500 mb-2'>Un groupe avec ce nom existe déjà.</div>"];
+    }
+    
+    // Ajout du créateur dans les membres s'il n'y est pas déjà
+    if (!in_array($userId, $members)) {
+        $members[] = $userId;
+    }
+    
+    // Création du groupe
+    $group_id = generate_group_id($groups_xml);
+    $group = $groups_xml->addChild('group');
+    $group->addAttribute('id', $group_id);
+    $group->addChild('name', htmlspecialchars($group_name));
+    $group->addChild('admin', $userId);
+    $group->addChild('created_at', date('c'));
+    
+    // Ajout des membres
+    $members_xml = $group->addChild('members');
+    foreach ($members as $member_id) {
+        $members_xml->addChild('member', $member_id);
+    }
+    
+    // Sauvegarde
+    $groups_xml->asXML(GROUPS_XML_PATH);
+    
+    return [true, "<div class='text-green-600 mb-2'>Groupe créé avec succès.</div>"];
+}
+
+/**
+ * Récupère un groupe par son ID
+ */
+function find_group_by_id($groups_xml, $group_id) {
+    foreach ($groups_xml->group as $group) {
+        if ((string)$group['id'] === $group_id) {
+            return $group;
+        }
+    }
+    return null;
+}
+
+/**
+ * Retourne la liste des membres d'un groupe
+ */
+function get_group_members($group) {
+    if (!isset($group->members)) {
+        return [];
+    }
+    
+    $members = [];
+    foreach ($group->members->member as $member) {
+        $members[] = (string)$member;
+    }
+    return $members;
+}
+
+/**
+ * Vérifie si un utilisateur a accès à un groupe
+ */
+function can_user_access_group($group, $userId) {
+    $members = get_group_members($group);
+    return in_array($userId, $members);
+}
+
+// ========== FONCTIONS MÉTIER - MESSAGES ========== //
+
+/**
+ * Prépare le dossier de stockage des fichiers
+ */
+function ensure_files_directory() {
+    if (!is_dir(FILES_STORAGE_PATH)) {
+        mkdir(FILES_STORAGE_PATH, 0777, true);
+    }
+}
+
+/**
+ * Traite l'upload d'un fichier
+ */
+function process_file_upload($file) {
+    if (!$file || !$file['tmp_name']) {
+        return null;
+    }
+    
+    ensure_files_directory();
+    
+    $filename = basename($file['name']);
+    $safe_filename = uniqid() . '_' . $filename;
+    $filepath = 'storage/files/' . $safe_filename;
+    $full_path = __DIR__ . '/../../' . $filepath;
+    
+    if (move_uploaded_file($file['tmp_name'], $full_path)) {
+        return [
+            'name' => $filename,
+            'type' => $file['type'],
+            'path' => $filepath
+        ];
+    }
+    
+    return null;
+}
+
+/**
+ * Ajoute un message dans un groupe
+ */
+function send_group_message($group, $userId, $text, $file = null) {
+    // Initialisation du conteneur de messages si nécessaire
+    if (!isset($group->messages)) {
+        $group->addChild('messages');
+    }
+    
+    // Création du message
+    $msg_id = uniqid('gmsg');
+    $msg = $group->messages->addChild('message');
+    $msg->addAttribute('id', $msg_id);
+    $msg->addAttribute('sender', $userId);
+    $msg->addAttribute('timestamp', date('c'));
+    $msg->addChild('text', htmlspecialchars($text));
+    
+    // Traitement du fichier attaché
+    if ($file) {
+        $file_info = process_file_upload($file);
+        if ($file_info) {
+            $fileNode = $msg->addChild('file');
+            $fileNode->addAttribute('name', $file_info['name']);
+            $fileNode->addAttribute('type', $file_info['type']);
+            $fileNode->addAttribute('path', $file_info['path']);
+        }
+    }
+    
+    return $msg_id;
+}
+
+/**
+ * Récupère les messages d'un groupe avec les informations des utilisateurs
+ */
+function get_group_messages($group, $users_xml) {
+    $messages = [];
+    
+    if (!isset($group->messages)) {
+        return $messages;
+    }
+    
+    foreach ($group->messages->message as $msg) {
+        $senderId = (string)$msg['sender'];
+        $senderName = get_user_display_name($users_xml, $senderId);
+        
+        $message_data = [
+            'id' => (string)$msg['id'],
+            'sender' => $senderId,
+            'senderName' => $senderName,
+            'timestamp' => (string)$msg['timestamp'],
+            'text' => (string)$msg->text,
+            'file' => null
+        ];
+        
+        // Ajout des informations de fichier si présent
+        if (isset($msg->file)) {
+            $message_data['file'] = [
+                'name' => (string)$msg->file['name'],
+                'type' => (string)$msg->file['type'],
+                'path' => (string)$msg->file['path'],
+            ];
+        }
+        
+        $messages[] = $message_data;
+    }
+    
+    return $messages;
+}
+
+/**
+ * Récupère le nom d'affichage d'un utilisateur
+ */
+function get_user_display_name($users_xml, $userId) {
+    foreach ($users_xml->user as $user) {
+        if ((string)$user['id'] === $userId) {
+            return (string)$user->displayName;
+        }
+    }
+    return 'Utilisateur inconnu';
+}
+
+// ========== FONCTIONS CONTRÔLEUR ========== //
+
+/**
+ * Redirige vers la page de login si non authentifié
+ */
+function redirect_if_not_authenticated($userId) {
+    if (!$userId) {
+        header('Location: /whatsup2/login');
+        exit();
+    }
+}
+
+/**
+ * Affiche la page vide (aucun groupe sélectionné)
+ */
+function render_empty_group_page() {
     $content = '';
     include __DIR__ . '/../../template/protected/chat_group.template.php';
     include __DIR__ . '/sidebar.logic.php';
@@ -19,101 +277,97 @@ if (!$group_id) {
     echo ob_get_clean();
     exit();
 }
-$groups_xml = simplexml_load_file(__DIR__ . '/../../storage/xml/groups.xml');
-$users_xml = simplexml_load_file(__DIR__ . '/../../storage/xml/users.xml');
-foreach ($groups_xml->group as $g) {
-    if ((string)$g['id'] === $group_id) {
-        $group = [
-            'id' => (string)$g['id'],
-            'name' => (string)$g->name,
-        ];
-        $members = array_map('strval', (array)$g->members->member);
-        break;
-    }
-}
-if (!$group || !in_array($userId, $members)) {
+
+/**
+ * Affiche la page d'erreur d'accès refusé
+ */
+function render_group_access_denied() {
     $content = '<div class="text-center text-red-500 mt-16">Groupe introuvable ou accès refusé.</div>';
     include __DIR__ . '/sidebar.logic.php';
     include __DIR__ . '/../../template/protected/protected.layout.php';
     exit();
 }
-// Gestion envoi message groupe
-if (
-    $_SERVER['REQUEST_METHOD'] === 'POST' &&
-    ((isset($_POST['message']) && trim($_POST['message']) !== '') || (isset($_FILES['file']) && $_FILES['file']['tmp_name'])) &&
-    isset($_POST['send_group_message']) && isset($_POST['group_id']) && $_POST['group_id'] === $group_id
-) {
-    $text = isset($_POST['message']) ? trim($_POST['message']) : '';
-    $msg_id = uniqid('gmsg');
-    // Ajout UNIQUEMENT dans groups.xml
-    $groups_path = __DIR__ . '/../../storage/xml/groups.xml';
-    $groups_xml = simplexml_load_file($groups_path);
-    foreach ($groups_xml->group as $g) {
-        if ((string)$g['id'] === $group_id) {
-            if (!isset($g->messages)) {
-                $g->addChild('messages');
-            }
-            $msg2 = $g->messages->addChild('message');
-            $msg2->addAttribute('id', $msg_id);
-            $msg2->addAttribute('sender', $userId);
-            $msg2->addAttribute('timestamp', date('c'));
-            $msg2->addChild('text', $text);
-            // Gestion fichier joint (optionnel)
-            if (isset($_FILES['file']) && $_FILES['file']['tmp_name']) {
-                $filename = basename($_FILES['file']['name']);
-                $filepath = 'storage/files/' . uniqid() . '_' . $filename;
-                if (!is_dir(__DIR__ . '/../../storage/files')) {
-                    mkdir(__DIR__ . '/../../storage/files', 0777, true);
-                }
-                move_uploaded_file($_FILES['file']['tmp_name'], __DIR__ . '/../../' . $filepath);
-                $fileNode2 = $msg2->addChild('file');
-                $fileNode2->addAttribute('name', $filename);
-                $fileNode2->addAttribute('type', $_FILES['file']['type']);
-                $fileNode2->addAttribute('path', $filepath);
-            }
-            break;
-        }
-    }
-    $groups_xml->asXML($groups_path);
-    header('Location: /whatsup2/chat_group?group=' . $group_id);
-    exit();
-}
-// Charger les messages du groupe (fichier XML: storage/xml/groups.xml)
-$groups_path = __DIR__ . '/../../storage/xml/groups.xml';
-$groups_xml = simplexml_load_file($groups_path);
-foreach ($groups_xml->group as $g) {
-    if ((string)$g['id'] === $group_id) {
-        if (isset($g->messages)) {
-            foreach ($g->messages->message as $msg) {
-                $senderId = (string)$msg['sender'];
-                $senderName = '';
-                foreach ($users_xml->user as $u) {
-                    if ((string)$u['id'] === $senderId) {
-                        $senderName = (string)$u->displayName;
-                        break;
-                    }
-                }
-                $messages[] = [
-                    'id' => (string)$msg['id'],
-                    'sender' => $senderId,
-                    'senderName' => $senderName,
-                    'timestamp' => (string)$msg['timestamp'],
-                    'text' => (string)$msg->text,
-                    'file' => isset($msg->file) ? [
-                        'name' => (string)$msg->file['name'],
-                        'type' => (string)$msg->file['type'],
-                        'path' => (string)$msg->file['path'],
-                    ] : null,
-                ];
-            }
-        }
-        break;
+
+/**
+ * Gère l'envoi d'un message POST
+ */
+function handle_group_message_post($group, $userId, $group_id, $groups_xml) {
+    $is_post = $_SERVER['REQUEST_METHOD'] === 'POST';
+    $has_message = isset($_POST['message']) && trim($_POST['message']) !== '';
+    $has_file = isset($_FILES['file']) && $_FILES['file']['tmp_name'];
+    $is_group_message = isset($_POST['send_group_message']);
+    $correct_group = isset($_POST['group_id']) && $_POST['group_id'] === $group_id;
+    
+    if ($is_post && ($has_message || $has_file) && $is_group_message && $correct_group) {
+        $text = isset($_POST['message']) ? trim($_POST['message']) : '';
+        $file = $_FILES['file'] ?? null;
+        
+        send_group_message($group, $userId, $text, $file);
+        $groups_xml->asXML(GROUPS_XML_PATH);
+        
+        header('Location: /whatsup2/chat_group?group=' . $group_id);
+        exit();
     }
 }
 
-$content = '';
-include __DIR__ . '/../../template/protected/chat_group.template.php';
-include __DIR__ . '/sidebar.logic.php';
-ob_start();
-include __DIR__ . '/../../template/protected/protected.layout.php';
-echo ob_get_clean();
+/**
+ * Affiche la page du groupe avec messages et membres
+ */
+function render_group_page($group, $users_xml, $group_id, $userId) {
+    $members = get_group_members($group);
+    $messages = get_group_messages($group, $users_xml);
+    
+    $content = '';
+    ob_start();
+    include __DIR__ . '/../../template/protected/chat_group.template.php';
+    $content = ob_get_clean();
+    
+    include __DIR__ . '/sidebar.logic.php';
+    include __DIR__ . '/../../template/protected/protected.layout.php';
+}
+
+// ========== CONTRÔLEUR PRINCIPAL ========== //
+
+// Initialisation des variables
+$userId = $_SESSION['email_id'] ?? null;
+$group_id = $_GET['group'] ?? '';
+$alert = '';
+
+// Gestion de la création de groupe
+if (isset($_POST['create_group']) && $userId) {
+    $group_name = trim($_POST['group_name'] ?? '');
+    $members = $_POST['members'] ?? [];
+    
+    list($is_valid, $validation_message) = validate_group_creation_input($group_name, $members);
+    
+    if ($is_valid) {
+        list($success, $alert) = create_group($group_name, $members, $userId);
+    } else {
+        $alert = $validation_message;
+    }
+}
+
+// Vérifications d'accès
+redirect_if_not_authenticated($userId);
+
+if (!$group_id) {
+    render_empty_group_page();
+}
+
+// Chargement des données
+$groups_xml = load_groups_xml();
+$users_xml = simplexml_load_file(USERS_XML_PATH);
+$group = find_group_by_id($groups_xml, $group_id);
+
+// Vérification d'accès au groupe
+if (!$group || !can_user_access_group($group, $userId)) {
+    render_group_access_denied();
+}
+
+// Traitement des messages
+handle_group_message_post($group, $userId, $group_id, $groups_xml);
+
+// Affichage de la page
+render_group_page($group, $users_xml, $group_id, $userId);
+
+?>

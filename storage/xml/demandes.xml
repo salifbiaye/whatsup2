@@ -19,4 +19,5 @@
     <status>rejected</status>
     <date>2025-07-11T09:00:00Z</date>
   </demande>
-<demande><sender_id>u6</sender_id><receiver_id>u3</receiver_id><status>accepted</status><date>2025-07-13T15:44:24+00:00</date></demande></demandes>
+<demande><sender_id>u6</sender_id><receiver_id>u3</receiver_id><status>accepted</status><date>2025-07-13T15:44:24+00:00</date></demande><demande><sender_id>u7</sender_id><receiver_id>u6</receiver_id><status>accepted</status><date>2025-07-13T17:25:59+00:00</date></demande>
+<demande><sender_id>u7</sender_id><receiver_id>u3</receiver_id><status>accepted</status><date>2025-07-13T19:33:52+00:00</date></demande></demandes>

@@ -5,30 +5,24 @@ if (session_status() === PHP_SESSION_NONE) {
 $user_id = $_SESSION['email_id']; // ou autre identifiant
 
 $xml_file = __DIR__ . '/../../storage/xml/demandes.xml';
-$xml = simplexml_load_file($xml_file);
+$users_file = __DIR__ . '/../../storage/xml/users.xml';
 
-// Traitement du formulaire
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sender_id'], $_POST['action'])) {
-    $sender_id = $_POST['sender_id'];
-    $action = $_POST['action']; // 'accept' ou 'reject'
-
+function process_demande_action($user_id, $sender_id, $action, $xml_file, $users_file) {
+    $xml = simplexml_load_file($xml_file);
+    $updated = false;
     foreach ($xml->demande as $demande) {
         if ((string)$demande->sender_id === $sender_id && (string)$demande->receiver_id === (string)$user_id && (string)$demande->status === 'pending') {
             $demande->status = ($action === 'accept') ? 'accepted' : 'rejected';
+            $updated = true;
             break;
         }
     }
     $xml->asXML($xml_file);
-    if ($action === 'accept') {
-        // Charger users.xml
-        $users_file = __DIR__ . '/../../storage/xml/users.xml';
+    if ($updated && $action === 'accept') {
         $users_xml = simplexml_load_file($users_file);
-    
-        // Trouver le receiver (celui qui accepte)
         foreach ($users_xml->user as $user) {
             if ((string)$user['id'] === (string)$user_id) {
                 if (!isset($user->contacts)) $user->addChild('contacts');
-                // Vérifier si le contact existe déjà
                 $already = false;
                 foreach ($user->contacts->contact as $c) {
                     if ((string)$c == $sender_id) {
@@ -44,75 +38,75 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sender_id'], $_POST['
         }
         $users_xml->asXML($users_file);
     }
-    header('Location: /whatsup2/demandes');
-    exit;
 }
 
-// Préparation des listes
-$demandes_pending = [];
-$demandes_accepted = [];
-$demandes_rejected = [];
-
-foreach ($xml->demande as $demande) {
-    if ((string)$demande->receiver_id === (string)$user_id) {
-        switch ((string)$demande->status) {
-            case 'pending':
-                $demandes_pending[] = $demande;
-                break;
-            case 'accepted':
-                $demandes_accepted[] = $demande;
-                break;
-            case 'rejected':
-                $demandes_rejected[] = $demande;
-                break;
+function get_demandes_by_status($xml, $user_id, $status) {
+    $result = [];
+    foreach ($xml->demande as $demande) {
+        if ((string)$demande->receiver_id === (string)$user_id && (string)$demande->status === $status) {
+            $result[] = $demande;
         }
     }
-}
-$users_xml = simplexml_load_file(__DIR__ . '/../../storage/xml/users.xml');
-$user_emails = [];
-foreach ($users_xml->user as $user) {
-    $user_emails[(string)$user['id']] = (string)$user->email;
+    return $result;
 }
 
-function format_date_humaine($iso_date) {
-    $dt = new DateTime($iso_date);
-    // Format : 13 juillet 2025, 16:58
-    setlocale(LC_TIME, 'fr_FR.UTF-8', 'fr_FR');
-    return strftime('%e %B %Y, %H:%M', $dt->getTimestamp());
+function get_sent_demandes($xml, $user_id) {
+    $result = [];
+    foreach ($xml->demande as $demande) {
+        if ((string)$demande->sender_id === $user_id) {
+            $result[] = $demande;
+        }
+    }
+    return $result;
 }
 
-// Mapper chaque demande avec email et date lisible
-function enrichir_demandes($demandes, $user_emails) {
+function enrichir_demandes($demandes, $user_emails, $type = 'received') {
     $result = [];
     foreach ($demandes as $demande) {
-        $id = (string)$demande->sender_id;
+        if ($type === 'received') {
+            $id = (string)$demande->sender_id;
+        } else {
+            $id = (string)$demande->receiver_id;
+        }
         $result[] = [
             'email' => $user_emails[$id] ?? $id,
             'date' => format_date_humaine((string)$demande->date),
+            'status' => (string)$demande->status,
             'raw'  => $demande
         ];
     }
     return $result;
 }
-$demandes_pending = enrichir_demandes($demandes_pending, $user_emails);
-$demandes_accepted = enrichir_demandes($demandes_accepted, $user_emails);
-$demandes_rejected = enrichir_demandes($demandes_rejected, $user_emails);
 
-// Préparer la liste des demandes envoyées par l'utilisateur courant
-$current_user_id = $_SESSION['email_id'];
-$demandes_envoyees = [];
-if (isset($xml)) {
-    foreach ($xml->demande as $demande) {
-        if ((string)$demande->sender_id === $current_user_id) {
-            $demandes_envoyees[] = [
-                'email' => $user_emails[(string)$demande->receiver_id] ?? $demande->receiver_id,
-                'date' => format_date_humaine((string)$demande->date),
-                'status' => (string)$demande->status,
-                'raw'   => $demande
-            ];
-        }
-    }
+function format_date_humaine($iso_date) {
+    $dt = new DateTime($iso_date);
+    setlocale(LC_TIME, 'fr_FR.UTF-8', 'fr_FR');
+    return strftime('%e %B %Y, %H:%M', $dt->getTimestamp());
 }
+
+
+$user_id = $_SESSION['email_id'];
+$xml = simplexml_load_file($xml_file);
+$users_xml = simplexml_load_file($users_file);
+$user_emails = [];
+foreach ($users_xml->user as $user) {
+    $user_emails[(string)$user['id']] = (string)$user->email;
+}
+
+// Traitement du formulaire
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sender_id'], $_POST['action'])) {
+    $sender_id = $_POST['sender_id'];
+    $action = $_POST['action'];
+    process_demande_action($user_id, $sender_id, $action, $xml_file, $users_file);
+    header('Location: /whatsup2/demandes');
+    exit;
+}
+
+// Préparation des listes enrichies
+$demandes_pending = enrichir_demandes(get_demandes_by_status($xml, $user_id, 'pending'), $user_emails, 'received');
+$demandes_accepted = enrichir_demandes(get_demandes_by_status($xml, $user_id, 'accepted'), $user_emails, 'received');
+$demandes_rejected = enrichir_demandes(get_demandes_by_status($xml, $user_id, 'rejected'), $user_emails, 'received');
+$demandes_envoyees = enrichir_demandes(get_sent_demandes($xml, $user_id), $user_emails, 'sent');
 
 ob_start();
 include(__DIR__ . '/../../template/protected/demandes.template.php');

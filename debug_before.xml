@@ -1,0 +1,2 @@
+<?xml version="1.0"?>
+<chat id="c2" user1="u6" user2="u7"><messages><message sender="u7" timestamp="2025-07-13T17:39:36+00:00"><text>dd</text></message></messages><chat id="c1" user1="u7" user2="u6"><messages><message id="m1" sender="u7" timestamp="2025-07-13T17:39:57+00:00"><text>xx</text></message></messages></chat><chat id="c2" user1="u6" user2="u3"><messages/></chat></chat>

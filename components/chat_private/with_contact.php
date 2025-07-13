@@ -20,7 +20,7 @@
                     </div>
                     <div class="text-xs text-gray-400 dark:text-gray-400 mt-1">
                         <?php
-                        echo $msg['sender'] === $_SESSION['email_id'] ? 'Moi' : $contactDisplayName;
+                        echo $msg['sender'] === $_SESSION['email_id'] ? 'Moi' : (isset($msg['senderName']) ? $msg['senderName'] : $msg['sender']);
                         echo ' | ' . htmlspecialchars(date('d/m/Y H:i', strtotime($msg['timestamp'])));
                         ?>
                     </div>

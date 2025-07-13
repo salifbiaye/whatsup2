@@ -17,6 +17,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ((string)$user->email === $email && (string)$user->password === $password) {
                 $_SESSION['email_id'] = (string)$user['id'];
                 $_SESSION['email'] = (string)$user->email;
+                $user->status = 'online';
+                $users->asXML(__DIR__ . '/../../storage/xml/users.xml');
+
                 header('Location: /whatsup2/chat_private');
                 exit();
             }

@@ -7,13 +7,17 @@
     </label>
    
     <input type="text" name="text" id="chat-input" placeholder="Votre message..." autocomplete="off" class="flex-1 px-4 py-2 bg-transparent border-none focus:ring-0 text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 outline-none" />
-    <button type="submit" class="w-10 h-10 flex items-center justify-center rounded-full bg-amber-600 hover:bg-amber-700 transition-colors text-white">
+    
+    <!-- CORRECTION : Ajout du name="send_message" -->
+    <button type="submit" name="send_message" class="w-10 h-10 flex items-center justify-center rounded-full bg-amber-600 hover:bg-amber-700 transition-colors text-white">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
         </svg>
     </button>
 </form>
+
 <div id="file-name-preview" class="flex items-center gap-2 mt-2 text-sm text-gray-600 dark:text-gray-300"></div>
+
 <script>
 function updateFileName(input) {
     const preview = document.getElementById('file-name-preview');
@@ -34,4 +38,13 @@ function updateFileName(input) {
         preview.appendChild(remove);
     }
 }
+
+// Ajout : Soumission du formulaire en appuyant sur Entrée
+document.getElementById('chat-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        // Simule un vrai clic sur le bouton submit (mieux que .submit())
+        document.querySelector('#chat-form button[type=submit]').click();
+    }
+});
 </script>
