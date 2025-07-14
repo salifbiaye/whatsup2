@@ -260,7 +260,7 @@ function get_user_display_name($users_xml, $userId) {
  */
 function redirect_if_not_authenticated($userId) {
     if (!$userId) {
-        header('Location: /whatsup2/login');
+        header('Location: /whatsup/login');
         exit();
     }
 }
@@ -305,7 +305,7 @@ function handle_group_message_post($group, $userId, $group_id, $groups_xml) {
         send_group_message($group, $userId, $text, $file);
         $groups_xml->asXML(GROUPS_XML_PATH);
         
-        header('Location: /whatsup2/chat_group?group=' . $group_id);
+        header('Location: /whatsup/chat_group?group=' . $group_id);
         exit();
     }
 }

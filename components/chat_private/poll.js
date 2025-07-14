@@ -6,7 +6,7 @@ function loadMessages() {
     var prevScroll = box.scrollTop;
     var prevHeight = box.scrollHeight;
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/whatsup2/logic/protected/chat_private_poll.logic.php?user=' + encodeURIComponent(window.contactId), true);
+    xhr.open('GET', '/whatsup/logic/protected/chat_private_poll.logic.php?user=' + encodeURIComponent(window.contactId), true);
     xhr.onload = function() {
         if (xhr.status === 200) {
             var oldHeight = box.scrollHeight;

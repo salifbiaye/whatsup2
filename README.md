@@ -5,7 +5,7 @@ Application de messagerie instantanée en PHP avec une interface moderne.
 ## Structure du Projet
 
 ```
-whatsup2/
+whatsup/
 ├── .htaccess            # Configuration Apache
 ├── assets/             # Fichiers statiques (CSS, JS, images)
 ├── components/         # Composants réutilisables

@@ -98,7 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['sender_id'], $_POST['
     $sender_id = $_POST['sender_id'];
     $action = $_POST['action'];
     process_demande_action($user_id, $sender_id, $action, $xml_file, $users_file);
-    header('Location: /whatsup2/demandes');
+    header('Location: /whatsup/demandes');
     exit;
 }
 

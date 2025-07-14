@@ -2,7 +2,7 @@
 session_start();
 
 if (isset($_SESSION['email_id'])) {
-    header('Location: /whatsup2/chat_private');
+    header('Location: /whatsup/chat_private');
     exit();
 }
 
@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $user->status = 'online';
                 $users->asXML(__DIR__ . '/../../storage/xml/users.xml');
 
-                header('Location: /whatsup2/chat_private');
+                header('Location: /whatsup/chat_private');
                 exit();
             }
         }

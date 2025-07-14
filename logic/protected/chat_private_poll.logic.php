@@ -41,7 +41,7 @@ foreach ($chat->messages->message as $msg) {
     echo '<div class="inline-block ' . ($is_me ? 'bg-amber-100' : 'bg-gray-200') . ' px-4 py-2 rounded shadow">';
     echo '<div class="text-sm text-gray-800">' . nl2br(htmlspecialchars($msg->text)) . '</div>';
     if (isset($msg->file)) {
-        echo '<a class="block mt-1 text-xs text-amber-600 hover:underline" href="/whatsup2/' . htmlspecialchars($msg->file['path']) . '" target="_blank">📎 ' . htmlspecialchars($msg->file['name']) . '</a>';
+        echo '<a class="block mt-1 text-xs text-amber-600 hover:underline" href="/whatsup/' . htmlspecialchars($msg->file['path']) . '" target="_blank">📎 ' . htmlspecialchars($msg->file['name']) . '</a>';
     }
     echo '</div>';
     echo '<div class="text-xs text-gray-400 mt-1">';

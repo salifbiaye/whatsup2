@@ -4,7 +4,7 @@
         <svg class="w-9 h-9 text-amber-500 dark:text-gray-400 drop-shadow" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 0 0-3-3.87M9 20H4v-2a4 4 0 0 1 3-3.87m10-5.13a4 4 0 1 1-8 0 4 4 0 0 1 8 0zM7 7a4 4 0 1 1 8 0 4 4 0 0 1-8 0z"/>
         </svg>
-        <span class="text-2xl md:text-3xl font-extrabold text-center tracking-tight bg-gradient-to-r from-gray-600 via-gray-400 to-gray-400 dark:from-gray-400 dark:via-gray-300 dark:to-gray-100 bg-clip-text text-transparent drop-shadow">
+        <span class="text-2xl md:text-3xl font-extrabold text-center tracking-tight dark:bg-gradient-to-r dark:from-gray-600 dark:via-gray-400 dark:to-gray-400 dark:bg-clip-text dark:text-transparent text-gray-600 drop-shadow">
             Gestion des demandes de contact
         </span>
     </span>
@@ -32,7 +32,7 @@
                             <?= htmlspecialchars($demande['date']) ?>
                         </span>
                     </div>
-                    <form method="post" action="/whatsup2/demandes" class="flex gap-2 mt-4 md:mt-0">
+                    <form method="post" action="/whatsup/demandes" class="flex gap-2 mt-4 md:mt-0">
                         <input type="hidden" name="sender_id" value="<?= htmlspecialchars($demande['raw']->sender_id) ?>">
                         <button type="submit" name="action" value="accept" class="px-4 py-1 rounded bg-green-600 text-white font-semibold hover:bg-green-700 transition">Accepter</button>
                         <button type="submit" name="action" value="reject" class="px-4 py-1 rounded bg-red-600 text-white font-semibold hover:bg-red-700 transition">Refuser</button>

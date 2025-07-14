@@ -1,3 +1,3 @@
 <?php
-// Route pour /whatsup2/chat_group
+// Route pour /whatsup/chat_group
 require_once __DIR__ . '/../logic/auth/register.logic.php';

@@ -23,10 +23,10 @@ document.addEventListener('DOMContentLoaded', function () {
         stickerPanel.className = 'absolute bottom-16 left-16 bg-white dark:bg-gray-900 border dark:border-gray-700 rounded shadow-lg p-3 flex gap-2 z-50';
         stickerPanel.style.display = 'none';
         const stickers = [
-            '/whatsup2/storage/stickers/smile.png',
-            '/whatsup2/storage/stickers/heart.png',
-            '/whatsup2/storage/stickers/thumbsup.png',
-            '/whatsup2/storage/stickers/laugh.png'
+            '/whatsup/storage/stickers/smile.png',
+            '/whatsup/storage/stickers/heart.png',
+            '/whatsup/storage/stickers/thumbsup.png',
+            '/whatsup/storage/stickers/laugh.png'
         ];
         stickers.forEach(src => {
             const img = document.createElement('img');

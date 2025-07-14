@@ -29,12 +29,12 @@
                 class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-amber-400" />
         </div>
         <button type="submit"
-            class="w-full py-2 bg-amber-600 text-white rounded hover:bg-amber-700 transition-colors">Créer mon compte</button>
+            class="w-full py-2  text-white  dark:bg-amber-600 bg-amber-500 rounded hover:bg-amber-700 transition-colors">Créer mon compte</button>
     </form>
     <div class="mt-5 text-center">
         <p class="text-sm text-gray-700 dark:text-gray-400">
             Déjà un compte ?
-            <a href="/whatsup2/login" class="text-amber-500 hover:text-amber-600 dark:text-amber-400">Se connecter</a>
+            <a href="/whatsup/login" class="text-amber-500 hover:text-amber-600 dark:text-amber-400">Se connecter</a>
         </p>
     </div>
 </div>

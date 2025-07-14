@@ -19,7 +19,7 @@ if (empty($group_id) || !isset($group)) {
         window.userId = '<?php echo $safe_user_id; ?>';
     </script>
     
-    <script src="/whatsup2/components/chat_group/poll.js"></script>
+    <script src="/whatsup/components/chat_group/poll.js"></script>
     
     <?php
     // Inclusion de la page avec groupe

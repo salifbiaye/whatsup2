@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (isset($_SESSION['email_id'])) {
-    header('Location: /whatsup2/chat_private');
+    header('Location: /whatsup/chat_private');
     exit();
 }
 $error = '';

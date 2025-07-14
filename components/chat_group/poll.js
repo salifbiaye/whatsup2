@@ -5,7 +5,7 @@ function loadMessages() {
     var prevScroll = box.scrollTop;
     var prevHeight = box.scrollHeight;
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/whatsup2/logic/protected/chat_group_poll.logic.php?group=' + encodeURIComponent(window.groupId), true);
+    xhr.open('GET', '/whatsup/logic/protected/chat_group_poll.logic.php?group=' + encodeURIComponent(window.groupId), true);
     xhr.onload = function() {
         if (xhr.status === 200) {
             box.innerHTML = xhr.responseText;

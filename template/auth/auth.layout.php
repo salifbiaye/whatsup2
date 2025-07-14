@@ -7,12 +7,12 @@
     </div>
     </div>
     <!-- Colonne droite décorative -->
-    <div class="hidden md:flex w-1/2 relative bg-amber-100 dark:bg-white/5 items-center justify-center relative overflow-hidden">
+    <div class="hidden md:flex w-1/2 relative bg-amber-800 dark:bg-white/5 items-center justify-center relative overflow-hidden">
     <div class="absolute right-0 top-0 -z-1 w-full max-w-[400px]">
         <img
           width="540"
           height="540"
-          src="/whatsup2/assets/shape/grid-01.svg"
+          src="/whatsup/assets/shape/grid-01.svg"
           alt="grid"
         />
       </div>
@@ -20,13 +20,13 @@
         <img
           width="540"
           height="540"
-          src="/whatsup2/assets/shape/grid-01.svg"
+          src="/whatsup/assets/shape/grid-01.svg"
           alt="grid"
         />
       </div>
-    <div class="absolute opacity-80 "></div>
+    <div class="absolute dark:opacity-80  "></div>
         <div class="relative z-10 flex flex-col items-center">
-            <img src="/whatsup2/assets/logo/logo.png" alt="Logo" class="w-96 ">
+            <img src="/whatsup/assets/logo/logo.png" alt="Logo" class="w-96 ">
   </div>
     </div>
 </div>

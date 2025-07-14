@@ -33,7 +33,7 @@ foreach ($groups_xml->group as $g) {
                 echo '</div>';
                 echo '<div class="text-sm text-gray-900 dark:text-gray-900 whitespace-pre-line">' . nl2br(htmlspecialchars((string)$msg->text)) . '</div>';
                 if (isset($msg->file)) {
-                    echo '<div class="mt-1"><a href="/whatsup2/' . htmlspecialchars((string)$msg->file['path']) . '" target="_blank" class="text-amber-600 underline">Fichier: ' . htmlspecialchars((string)$msg->file['name']) . '</a></div>';
+                    echo '<div class="mt-1"><a href="/whatsup/' . htmlspecialchars((string)$msg->file['path']) . '" target="_blank" class="text-amber-600 underline">Fichier: ' . htmlspecialchars((string)$msg->file['name']) . '</a></div>';
                 }
                 echo '</div>';
                 echo '</div>';

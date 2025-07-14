@@ -26,7 +26,7 @@ $membersList = $contacts_for_modal ?? $contacts ?? [];
         <?php endif; ?>
         
         <!-- Formulaire de création -->
-        <form method="post" action="/whatsup2/chat_group" autocomplete="off">
+        <form method="post" action="/whatsup/chat_group" autocomplete="off">
             <input type="hidden" name="create_group" value="1">
             
             <!-- Nom du groupe -->

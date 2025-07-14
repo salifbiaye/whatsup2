@@ -11,5 +11,5 @@ if (isset($_SESSION['email_id'])) {
 session_destroy();
 
 // Rediriger vers la page de connexion
-header('Location: /whatsup2/login');
+header('Location: /whatsup/login');
 exit();

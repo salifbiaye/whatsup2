@@ -218,7 +218,7 @@ $current_user_id = $_SESSION['email_id'] ?? null;
 $contact_id = $_GET['user'] ?? '';
 
 if (!$current_user_id) {
-    header('Location: /whatsup2/login');
+    header('Location: /whatsup/login');
     exit();
 }
 
@@ -241,8 +241,15 @@ if (isset($_POST['create_contact'])) {
         if ($found) {
             list($ok, $msg2) = add_contact($users, $current_user_id, (string)$found['id']);
             if ($ok) {
+                // Notifier le contact par email
+                if (isset($found->email) && filter_var((string)$found->email, FILTER_VALIDATE_EMAIL)) {
+                    $to = (string)$found->email;
+                    $subject = "Nouvelle demande de contact sur WhatsUp";
+                    $body = "Bonjour,<br><br>Vous avez reçu une nouvelle demande d'ajout de contact  sur WhatsUp.";
+                    send_gmail_notification($to, $subject, $body);
+                }
                 ajouter_demande_contact($current_user_id, (string)$found['id']);
-                header('Location: /whatsup2/demandes');
+                header('Location: /whatsup/demandes');
                 exit();
             } else {
                 $alert = $msg2;
@@ -273,7 +280,7 @@ if (
     
     if ($success) {
         // Redirection après succès
-        header('Location: /whatsup2/chat_private?user=' . urlencode($contact_id));
+        header('Location: /whatsup/chat_private?user=' . urlencode($contact_id));
         exit();
     } else {
         $alert = "<div class='text-red-500 mb-2'>$message</div>";

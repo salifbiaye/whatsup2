@@ -7,7 +7,7 @@ if (!isset($modalId)) $modalId = 'modalUpdateUser';
     <div class="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-8 w-full max-w-md relative">
         <button onclick="closeModal('<?php echo $modalId; ?>')" class="absolute top-3 right-3 text-gray-400 hover:text-red-500 text-2xl">&times;</button>
         <h2 class="text-xl font-bold mb-4 text-gray-800 dark:text-gray-100">Modifier mon profil</h2>
-        <form method="POST" action="/whatsup2/logic/auth/update_user.logic.php" enctype="multipart/form-data">
+        <form method="POST" action="/whatsup/logic/auth/update_user.logic.php" enctype="multipart/form-data">
             <div class="mb-4">
                 <label class="block mb-2 text-gray-700 dark:text-gray-200">Adresse email</label>
                 <div class="w-full px-3 py-2 mb-4 dark:text-white rounded border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
@@ -56,7 +56,7 @@ if (form) {
                 if (avatarInput.files.length > 0) {
                     const avatarImg = document.querySelector('img');
                     if (avatarImg) {
-                        avatarImg.src = '/whatsup2/' + formData.get('avatar');
+                        avatarImg.src = '/whatsup/' + formData.get('avatar');
                     }
                 }
                 

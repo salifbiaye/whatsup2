@@ -3,7 +3,7 @@ session_start();
 
 // Vérifier si l'utilisateur est connecté
 if (!isset($_SESSION['email_id'])) {
-    header('Location: /whatsup2/login');
+    header('Location: /whatsup/login');
     exit;
 }
 
@@ -30,5 +30,5 @@ if (file_exists($xmlPath)) {
 session_destroy();
 
 // Redirection vers la page de login
-header('Location: /whatsup2/login');
+header('Location: /whatsup/login');
 exit;

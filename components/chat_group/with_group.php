@@ -3,7 +3,7 @@
 ?>
 <div class="mx-auto bg-white h-screen dark:bg-white/5 shadow p-6">
     <div class="flex items-center gap-3 mb-4">
-        <img src="/whatsup2/storage/avatars/avatar_group.png" alt="Avatar Groupe" class="w-10 h-10 rounded-full object-cover border">
+        <img src="/whatsup/storage/avatars/avatar_group.png" alt="Avatar Groupe" class="w-10 h-10 rounded-full object-cover border">
         <div>
             <div class="font-semibold text-gray-800 dark:text-gray-100"><?php echo htmlspecialchars((string)$group->name); ?></div>
             <div class="text-xs text-gray-400 dark:text-gray-400">Chat de groupe</div>
