@@ -1,4 +1,4 @@
-<div class="mx-auto bg-white flex justify-center items-center h-screen dark:bg-white/5 shadow p-6">
+<div class="mx-auto bg-white flex justify-center items-center h-screen dark:bg-gray-900 shadow p-6">
         <div class="text-center text-gray-400 py-12">
            
             <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">Sélectionnez un groupe</h3>

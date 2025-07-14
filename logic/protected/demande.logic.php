@@ -3,6 +3,12 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 $user_id = $_SESSION['email_id']; // ou autre identifiant
+;
+
+if (!$user_id) {
+    header('Location: /whatsup/login');
+    exit();
+}
 
 $xml_file = __DIR__ . '/../../storage/xml/demandes.xml';
 $users_file = __DIR__ . '/../../storage/xml/users.xml';
