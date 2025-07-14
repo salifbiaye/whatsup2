@@ -80,11 +80,8 @@ function enrichir_demandes($demandes, $user_emails, $type = 'received') {
 
 function format_date_humaine($iso_date) {
     $dt = new DateTime($iso_date);
-    setlocale(LC_TIME, 'fr_FR.UTF-8', 'fr_FR');
-    return strftime('%e %B %Y, %H:%M', $dt->getTimestamp());
+    return $dt->format('d F Y, H:i');
 }
-
-
 $user_id = $_SESSION['email_id'];
 $xml = simplexml_load_file($xml_file);
 $users_xml = simplexml_load_file($users_file);

@@ -8,7 +8,7 @@ RewriteBase /whatsup/
 
 # Rediriger la racine vers /login
 RewriteCond %{REQUEST_URI} ^/whatsup/?$ [NC]
-RewriteRule ^$ routes/login.php [L,R=302]
+RewriteRule ^$ login [L,R=302]
 
 # Routes dynamiques depuis /routes
 RewriteCond %{REQUEST_FILENAME} !-f
