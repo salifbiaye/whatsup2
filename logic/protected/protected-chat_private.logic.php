@@ -95,11 +95,15 @@ function send_private_message($private_chats, $chat, $userId, $contact_id) {
     }
 
     $text = trim($_POST['text'] ?? '');
+    // Chiffrer le message avant de l'enregistrer
+    $encryptedText = encryptMessage($text);
+    
     $msg = $chat->messages->addChild('message');
     $msg->addAttribute('id', 'm' . (count($chat->messages->message) + 1));
     $msg->addAttribute('sender', $userId);
     $msg->addAttribute('timestamp', date('c'));
-    $msg->addChild('text', htmlspecialchars($text));
+    $msg->addAttribute('encrypted', 'true'); // Marquer comme chiffré
+    $msg->addChild('text', $encryptedText);
 
     // Gestion du fichier joint (si présent)
     if (isset($_FILES['file']) && $_FILES['file']['tmp_name'] && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
@@ -164,7 +168,9 @@ function get_private_messages($chat) {
                 'sender' => $sender_id,
                 'senderName' => $user_map[$sender_id] ?? $sender_id,
                 'timestamp' => (string)$msg['timestamp'],
-                'text' => (string)$msg->text,
+                'text' => (isset($msg['encrypted']) && (string)$msg['encrypted'] === 'true') 
+                    ? decryptMessage((string)$msg->text)
+                    : (string)$msg->text,
                 'file' => isset($msg->file) ? [
                     'name' => (string)$msg->file['name'],
                     'type' => (string)$msg->file['type'],

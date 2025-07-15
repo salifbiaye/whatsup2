@@ -42,3 +42,28 @@ function send_gmail_notification($to, $subject, $body) {
         return false;
     }
 }
+
+
+
+
+// Clé de chiffrement (à changer en production)
+define('ENCRYPTION_KEY', 'Kj9#mP2$vL5&qX8!zW3*tB6(nQ9)hM4^cV7%jK1@lN8&pX5$sR2)vY9&hT4#gB7*nM2@kL5$qW8!zX3^pV6%jH9(mK4&cF7#sD2*');
+
+function getEncryptionKey() {
+    return ENCRYPTION_KEY;
+}
+
+function encryptMessage($message) {
+    $key =  getEncryptionKey();
+    $iv = openssl_random_pseudo_bytes(16);
+    $encrypted = openssl_encrypt($message, 'aes-256-cbc', $key, 0, $iv);
+    return base64_encode($iv . $encrypted);
+}
+
+function decryptMessage($encryptedMessage) {
+    $key = getEncryptionKey();
+    $data = base64_decode($encryptedMessage);
+    $iv = substr($data, 0, 16);
+    $encrypted = substr($data, 16);
+    return openssl_decrypt($encrypted, 'aes-256-cbc', $key, 0, $iv);
+}

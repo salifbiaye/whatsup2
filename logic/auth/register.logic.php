@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $user = $users->addChild('user');
             $user->addAttribute('id', $new_id);
             $user->addChild('email', $email);
-            $user->addChild('password', $password); // À remplacer par un hash en prod
+            $user->addChild('password', md5(sha1($password))); // À remplacer par un hash en prod
             $user->addChild('displayName', $displayName);
             $user->addChild('avatar', $avatar);
             $user->addChild('status', $status);

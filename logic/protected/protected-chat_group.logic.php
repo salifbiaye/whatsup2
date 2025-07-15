@@ -187,7 +187,11 @@ function send_group_message($group, $userId, $text, $file = null) {
     $msg->addAttribute('id', $msg_id);
     $msg->addAttribute('sender', $userId);
     $msg->addAttribute('timestamp', date('c'));
-    $msg->addChild('text', htmlspecialchars($text));
+    $msg->addAttribute('encrypted', 'true'); // Marquer comme chiffré
+    
+    // Chiffrer le message avant de l'enregistrer
+    $encryptedText = encryptMessage($text);
+    $msg->addChild('text', $encryptedText);
     
     // Traitement du fichier attaché
     if ($file) {
@@ -222,7 +226,9 @@ function get_group_messages($group, $users_xml) {
             'sender' => $senderId,
             'senderName' => $senderName,
             'timestamp' => (string)$msg['timestamp'],
-            'text' => (string)$msg->text,
+            'text' => (isset($msg['encrypted']) && (string)$msg['encrypted'] === 'true')
+                ? decryptMessage((string)$msg->text)
+                : (string)$msg->text,
             'file' => null
         ];
         
@@ -245,12 +251,81 @@ function get_group_messages($group, $users_xml) {
  * Récupère le nom d'affichage d'un utilisateur
  */
 function get_user_display_name($users_xml, $userId) {
-    foreach ($users_xml->user as $user) {
-        if ((string)$user['id'] === $userId) {
-            return (string)$user->displayName;
-        }
+    $user = $users_xml->xpath('//user[@id="' . $userId . '"]');
+    return $user ? (string)$user[0]->displayName : $userId;
+}
+
+/**
+ * Récupère les informations de base d'un groupe pour l'affichage
+ * Inclut le nom, le nombre de membres et les pseudos des membres (tronqués si nécessaire)
+ */
+function get_group_display_info($group_id) {
+    // Charger les fichiers XML
+    $groups_xml = load_groups_xml();
+    $users_xml = simplexml_load_file(USERS_XML_PATH);
+    
+    // Trouver le groupe
+    $group = find_group_by_id($groups_xml, $group_id);
+    if (!$group) {
+        return null;
     }
-    return 'Utilisateur inconnu';
+    
+    // Récupérer les informations des membres
+    $memberInfo = get_group_member_names($group, $users_xml);
+    
+    // Préparer les données pour le frontend
+    return [
+        'name' => (string)$group->name,
+        'member_count' => count(get_group_members($group)),
+        'members' => [
+            'admin' => $memberInfo['admin']['name'],
+            'others' => array_map(function($member) {
+                return $member['name'];
+            }, $memberInfo['other_members']),
+            'others_count' => $memberInfo['others_count']
+        ]
+    ];
+}
+
+/**
+ * Récupère la liste des pseudos des membres d'un groupe
+ * Avec option de troncage si plus de 4 membres
+ */
+function get_group_member_names($group, $users_xml, $truncate = true) {
+    $members = get_group_members($group);
+    $memberNames = [];
+    
+    // Récupérer les pseudos pour tous les membres
+    foreach ($members as $member) {
+        $memberNames[] = [
+            'id' => (string)$group,
+            'name' => get_user_display_name($users_xml, (string)$member),
+            'is_admin' => (string)$member === (string)$group->admin
+        ];
+    }
+    
+    // Trier les membres : admin en premier, puis les autres par ordre alphabétique
+    usort($memberNames, function($a, $b) {
+        if ($a['is_admin'] && !$b['is_admin']) return -1;
+        if (!$a['is_admin'] && $b['is_admin']) return 1;
+        return strcmp($a['name'], $b['name']);
+    });
+    
+    // Tronquer la liste si demandé et plus de 4 membres
+    if ($truncate && count($memberNames) > 4) {
+        $othersCount = count($memberNames) - 4;
+        return [
+            'admin' => $memberNames[0],
+            'other_members' => array_slice($memberNames, 1, 3),
+            'others_count' => $othersCount
+        ];
+    }
+    
+    return [
+        'admin' => $memberNames[0],
+        'other_members' => array_slice($memberNames, 1),
+        'others_count' => 0
+    ];
 }
 
 // ========== FONCTIONS CONTRÔLEUR ========== //

@@ -106,25 +106,7 @@ if (!isset($modalId)) $modalId = 'modalUpdateUser';
                     </p>
                 </div>
                 
-                <!-- Information de sécurité -->
-                <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4">
-                    <div class="flex items-start gap-3">
-                        <div class="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5">
-                            <svg fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="text-sm text-blue-800 dark:text-blue-200 font-medium">
-                                Sécurité et confidentialité
-                            </p>
-                            <p class="text-xs text-blue-700 dark:text-blue-300 mt-1">
-                                Vos informations personnelles sont cryptées et sécurisées. Seul votre nom affiché sera visible par vos contacts.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                
+    
                 <!-- Boutons d'action -->
                 <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
                     <button type="button"

@@ -9,3 +9,4 @@
 <!ELEMENT message (text)>
 <!ATTLIST message id ID #REQUIRED sender IDREF #REQUIRED timestamp CDATA #REQUIRED>
 <!ELEMENT text (#PCDATA)>
+<!ATTLIST message encrypted CDATA #REQUIRED>

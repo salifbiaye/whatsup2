@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($email && $password) {
         $users = simplexml_load_file(__DIR__ . '/../../storage/xml/users.xml');
         foreach ($users->user as $user) {
-            if ((string)$user->email === $email && (string)$user->password === $password) {
+            if ((string)$user->email === $email && (string)$user->password === md5(sha1($password))) {
                 $_SESSION['email_id'] = (string)$user['id'];
                 $_SESSION['email'] = (string)$user->email;
                 $user->status = 'online';

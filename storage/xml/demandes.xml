@@ -1,23 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE demandes SYSTEM "demande.dtd">
 <demandes>
-  <demande>
-    <sender_id>12</sender_id>
-    <receiver_id>15</receiver_id>
-    <status>pending</status>
-    <date>2025-07-13T14:23:11Z</date>
-  </demande>
-  <demande>
-    <sender_id>14</sender_id>
-    <receiver_id>15</receiver_id>
-    <status>accepted</status>
-    <date>2025-07-12T10:00:00Z</date>
-  </demande>
-  <demande>
-    <sender_id>16</sender_id>
-    <receiver_id>15</receiver_id>
-    <status>rejected</status>
-    <date>2025-07-11T09:00:00Z</date>
-  </demande>
-<demande><sender_id>u6</sender_id><receiver_id>u3</receiver_id><status>accepted</status><date>2025-07-13T15:44:24+00:00</date></demande><demande><sender_id>u7</sender_id><receiver_id>u6</receiver_id><status>accepted</status><date>2025-07-13T17:25:59+00:00</date></demande>
-<demande><sender_id>u7</sender_id><receiver_id>u3</receiver_id><status>accepted</status><date>2025-07-13T19:33:52+00:00</date></demande><demande><sender_id>u6</sender_id><receiver_id>u8</receiver_id><status>accepted</status><date>2025-07-14T02:26:27+00:00</date></demande><demande><sender_id>u6</sender_id><receiver_id>u2</receiver_id><status>accepted</status><date>2025-07-14T18:20:54+00:00</date></demande></demandes>
+<demande><sender_id>u2</sender_id><receiver_id>u1</receiver_id><status>accepted</status><date>2025-07-15T20:05:07+00:00</date></demande></demandes>

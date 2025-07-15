@@ -112,7 +112,7 @@
                 <?php else: ?>
                     <div class="space-y-4">
                         <?php foreach ($demandes_pending as $demande): ?>
-                            <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+                            <div class="flex flex-col sm:flex-row sm:items-center space-y-2 justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
                                 <div class="flex items-center gap-4">
                                     <div class="w-10 h-10 bg-amber-100 dark:bg-amber-900 rounded-full flex items-center justify-center">
                                         <svg class="w-5 h-5 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -128,7 +128,7 @@
                                         </p>
                                     </div>
                                 </div>
-                                <form method="post" action="/whatsup/demandes" class="flex gap-2">
+                                <form method="post" action="/whatsup/demandes" class="flex  gap-2">
                                     <input type="hidden" name="sender_id" value="<?= htmlspecialchars($demande['raw']->sender_id) ?>">
                                     <button type="submit" name="action" value="accept" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium">
                                         Accepter
@@ -197,7 +197,7 @@
                                     ];
                                     $config = $statusConfig[$demande['status']] ?? ['bg-gray-100 text-gray-600', 'Inconnu'];
                                     ?>
-                                    <span class="<?= $config[0] ?> px-3 py-1 rounded-full text-sm font-medium">
+                                    <span class="<?= $config[0] ?> px-3 py-1 hidden md:block truncate rounded-full text-sm font-medium">
                                         <?= $config[1] ?>
                                     </span>
                                 </div>
@@ -252,7 +252,7 @@
                                         </p>
                                     </div>
                                 </div>
-                                <span class="bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400 px-3 py-1 rounded-full text-sm font-medium">
+                                <span class="bg-green-100 hidden md:block truncate dark:bg-green-900 text-green-600 dark:text-green-400 px-3 py-1 rounded-full text-sm font-medium">
                                     Acceptée
                                 </span>
                             </div>
@@ -306,7 +306,7 @@
                                         </p>
                                     </div>
                                 </div>
-                                <span class="bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-400 px-3 py-1 rounded-full text-sm font-medium">
+                                <span class="bg-red-100 hidden md:block truncate dark:bg-red-900 text-red-600 dark:text-red-400 px-3 py-1 rounded-full text-sm font-medium">
                                     Refusée
                                 </span>
                             </div>

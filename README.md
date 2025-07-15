@@ -26,7 +26,6 @@ Gestion des URL et des points d'entrée de l'application.
 - `auth.php`: Routes d'authentification
 - `chat.php`: Routes de chat
 - `groups.php`: Routes de gestion des groupes
-- `api.php`: API REST
 
 ### 2. Logique (`logic/`)
 

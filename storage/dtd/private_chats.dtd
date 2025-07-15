@@ -7,3 +7,4 @@
 <!ELEMENT text (#PCDATA)>
 <!ELEMENT file EMPTY>
 <!ATTLIST file name CDATA #REQUIRED type CDATA #REQUIRED path CDATA #REQUIRED>
+<!ATTLIST message encrypted CDATA #REQUIRED>
